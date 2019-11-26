@@ -17,6 +17,7 @@ public abstract class BrowserFactory {
             case FIREFOX:
                 return new FirefoxDriver();
             case EDGE:
+                System.setProperty("webdriver.edge.driver", "c:\\WebDrivers\\msedgedriver.exe");
                 return new EdgeDriver();
             case MSIE:
                 return new InternetExplorerDriver();
