@@ -16,6 +16,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.function.Function;
 
 public class BlogTests {
 
@@ -88,11 +89,11 @@ public class BlogTests {
     }
 
     private WebElement fluentWaitForElement(By locator) {
-        Wait<WebDriver> wait = new FluentWait<WebDriver>(driver)
+        Wait<WebDriver> wait = new FluentWait<>(driver)
                 .withTimeout(Duration.ofSeconds(10))
                 .pollingEvery(Duration.ofMillis(250))
                 .ignoring(NoSuchElementException.class);
-        return wait.until(drv -> drv.findElement(locator));
+        return wait.until(webDriver -> driver.findElement(locator));
     }
 
 }

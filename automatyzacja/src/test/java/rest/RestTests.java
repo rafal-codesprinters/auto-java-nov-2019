@@ -19,7 +19,13 @@ public class RestTests {
     @Test
     void canFetchAllPostsForOneUser() {
         // https://jsonplaceholder.typicode.com/posts?userId=2
-        given().param("userId", 2).when().get("https://jsonplaceholder.typicode.com/posts").then().statusCode(200).and().body("", hasSize(10));
+        given().
+                param("userId", 2).
+        when().
+                get("https://jsonplaceholder.typicode.com/posts").
+        then().
+                statusCode(200).
+                body("", hasSize(10));
     }
 
     @Test
