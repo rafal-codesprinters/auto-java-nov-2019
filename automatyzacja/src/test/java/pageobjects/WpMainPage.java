@@ -3,7 +3,7 @@ package pageobjects;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-public class WpMainPage extends  WpPage{
+public class WpMainPage extends WpPage{
     private static final By LOCATOR_POST_LINK = By.cssSelector("article.post .entry-title > a");
     private static final By LOCATOR_MAIN_PAGE_BODY = By.cssSelector("body.home");
 

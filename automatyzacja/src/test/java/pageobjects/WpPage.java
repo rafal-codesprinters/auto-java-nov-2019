@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-class WpPage {
+abstract class WpPage {
     protected static final String BLOG_BASE_URL = "http://www.automation.markowicz.pro";
     final WebDriver driver;
 
