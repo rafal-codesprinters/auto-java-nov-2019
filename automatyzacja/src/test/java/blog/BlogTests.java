@@ -6,11 +6,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 
 public class BlogTests {
@@ -22,6 +26,7 @@ public class BlogTests {
     void setup() {
         driver = DriverFactory.getDriver();
         driver.manage().window().maximize();
+        // driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
     @Test
@@ -61,7 +66,8 @@ public class BlogTests {
                 .filter(nl -> nl.getAttribute("class").matches("^(next page-numbers|page-numbers next)$"))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("No link to next page found"));*/
-        WebElement nextPageLink = driver.findElement(By.cssSelector("a.page-numbers.next"));
+        // WebElement nextPageLink = driver.findElement(By.cssSelector("a.page-numbers.next"));
+        WebElement nextPageLink = explicitlWaitForElement(By.cssSelector("a.page-numbers.next"));
         nextPageLink.click();
         Assertions.assertEquals(BLOG_HOME_URL + "/page/2/", driver.getCurrentUrl());
     }
@@ -73,8 +79,20 @@ public class BlogTests {
 
     private void openHomePage() {
         driver.get(BLOG_HOME_URL);
+        fluentWaitForElement(By.cssSelector("body.home"));
+    }
+
+    private WebElement explicitlWaitForElement(By locator) {
         WebDriverWait wait = new WebDriverWait(driver, 5);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("body.home")));
+        return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+    }
+
+    private WebElement fluentWaitForElement(By locator) {
+        Wait<WebDriver> wait = new FluentWait<WebDriver>(driver)
+                .withTimeout(Duration.ofSeconds(10))
+                .pollingEvery(Duration.ofMillis(250))
+                .ignoring(NoSuchElementException.class);
+        return wait.until(drv -> drv.findElement(locator));
     }
 
 }
