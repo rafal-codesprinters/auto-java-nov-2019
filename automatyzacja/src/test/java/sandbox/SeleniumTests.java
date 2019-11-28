@@ -1,5 +1,6 @@
 package sandbox;
 
+import driverfactory.DriverFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +20,7 @@ public class SeleniumTests {
     @BeforeEach
     void setup() {
         //System.setProperty("webdriver.chrome.driver", "C:\WebDrivers\chromedriver.exe");
-        driver = new ChromeDriver();
+        driver = DriverFactory.getDriver();
     }
 
     @Test

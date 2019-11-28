@@ -33,17 +33,9 @@ public class WpNotePage extends WpPage {
     public WpNotePage postComment(Comment comment) {
         WebElement commentForm = driver.findElement(LOCATOR_COMMENT_FORM);
 
-        WebElement commentTextBox = commentForm.findElement(LOCATOR_COMMENT_TEXT_BOX);
-        commentTextBox.click();
-        commentTextBox.sendKeys(comment.getText());
-
-        WebElement commentNameBox = driver.findElement(LOCATION_COMMENT_NAME_BOX);
-        commentNameBox.click();
-        commentNameBox.sendKeys(comment.getName());
-
-        WebElement commentMailBox = driver.findElement(LOCATION_COMMENT_MAIL_BOX);
-        commentMailBox.click();
-        commentMailBox.sendKeys(comment.getMail());
+        fillOutCommentText(comment, commentForm);
+        fillOutName(comment);
+        fillOutEmail(comment);
 
         WebElement commentSubmit = driver.findElement(LOCATION_COMMENT_SUBMIT);
         commentSubmit.click();
@@ -51,13 +43,33 @@ public class WpNotePage extends WpPage {
         return new WpNotePage(driver);
     }
 
+    private void fillOutEmail(Comment comment) {
+        WebElement commentMailBox = driver.findElement(LOCATION_COMMENT_MAIL_BOX);
+        commentMailBox.click();
+        commentMailBox.sendKeys(comment.getMail());
+    }
+
+    private void fillOutName(Comment comment) {
+        WebElement commentNameBox = driver.findElement(LOCATION_COMMENT_NAME_BOX);
+        commentNameBox.click();
+        commentNameBox.sendKeys(comment.getName());
+    }
+
+    private void fillOutCommentText(Comment comment, WebElement commentForm) {
+        WebElement commentTextBox = commentForm.findElement(LOCATOR_COMMENT_TEXT_BOX);
+        commentTextBox.click();
+        commentTextBox.sendKeys(comment.getText());
+    }
+
     public boolean hasComment(Comment comment) {
         Predicate<WebElement> nameFilter = c -> c.findElement(LOCATOR_COMMENT_AUTHOR).getText().equals(comment.getName());
         Predicate<WebElement> textFilter = c -> c.findElement(LOCATOR_COMMENT_TEXT).getText().equals(comment.getText());
 
+
         List<WebElement> comments = driver.findElements(LOCATOR_COMMENT_BODY).stream()
                 .filter(nameFilter.and(textFilter))
                 .collect(Collectors.toList());
+
         return comments.size() == 1;
     }
 }

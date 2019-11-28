@@ -48,6 +48,14 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M3</version>
                 <configuration>
+                    <properties>
+                        <configurationParameters>
+                            junit.jupiter.execution.parallel.enabled=true
+                            junit.jupiter.execution.parallel.mode.default=concurrent
+                            junit.jupiter.execution.parallel.config.strategy=fixed
+                            junit.jupiter.execution.parallel.config.fixed.parallelism=4
+                        </configurationParameters>
+                    </properties>
                     <systemPropertyVariables>
                         <default-browser>chrome</default-browser>
                     </systemPropertyVariables>
@@ -57,6 +65,7 @@
                         <configuration>
                             <systemPropertyVariables>
                                 <browser>${browser}</browser>
+                                <grid-host>${grid-host}</grid-host>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>

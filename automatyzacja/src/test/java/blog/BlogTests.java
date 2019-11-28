@@ -16,7 +16,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.function.Function;
 
 public class BlogTests {
 
@@ -49,26 +48,22 @@ public class BlogTests {
     @Test
     void canDisplaySecondPageUsingItsNumber() {
         openHomePage();
-        /*List<WebElement> navLinks = driver.findElements(LOC_NAVLINKS);
-        WebElement secondPageLink = navLinks.stream()
-                .filter(nl -> nl.getAttribute("class").equals("page-numbers") && nl.getAttribute("href").equals(BASE_URL + "/page/2/"))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("No link to second page found"));*/
-        WebElement secondPageLink = driver.findElement(By.cssSelector("a.page-numbers:first-of-type"));
+        closeCookieInfo();
+        WebElement secondPageLink = waitForElementClickable(By.cssSelector("a.page-numbers:first-of-type"));
         secondPageLink.click();
         Assertions.assertEquals(BLOG_HOME_URL + "/page/2/", driver.getCurrentUrl());
+    }
+
+    private void closeCookieInfo() {
+        driver.findElements(By.cssSelector("#eu-cookie-law input")).forEach(WebElement::click);
+        waitForElementNotVisible(By.id("eu_cookie_law_widget-2"));
     }
 
     @Test
     void canDisplaySecondPageUsingNextPageLink() {
         openHomePage();
-        /*List<WebElement> navLinks = driver.findElements(LOC_NAVLINKS);
-        WebElement nextPageLink = navLinks.stream()
-                .filter(nl -> nl.getAttribute("class").matches("^(next page-numbers|page-numbers next)$"))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("No link to next page found"));*/
-        // WebElement nextPageLink = driver.findElement(By.cssSelector("a.page-numbers.next"));
-        WebElement nextPageLink = explicitlWaitForElement(By.cssSelector("a.page-numbers.next"));
+        closeCookieInfo();
+        WebElement nextPageLink = waitForElementClickable(By.cssSelector("a.page-numbers.next"));
         nextPageLink.click();
         Assertions.assertEquals(BLOG_HOME_URL + "/page/2/", driver.getCurrentUrl());
     }
@@ -84,8 +79,7 @@ public class BlogTests {
     }
 
     private WebElement explicitlWaitForElement(By locator) {
-        WebDriverWait wait = new WebDriverWait(driver, 5);
-        return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+        return new WebDriverWait(driver, 5).until(ExpectedConditions.presenceOfElementLocated(locator));
     }
 
     private WebElement fluentWaitForElement(By locator) {
@@ -94,6 +88,14 @@ public class BlogTests {
                 .pollingEvery(Duration.ofMillis(250))
                 .ignoring(NoSuchElementException.class);
         return wait.until(webDriver -> driver.findElement(locator));
+    }
+
+    private WebElement waitForElementClickable(By locator) {
+        return new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(locator));
+    }
+
+    private void waitForElementNotVisible(By locator) {
+        new WebDriverWait(driver, 5).until(ExpectedConditions.invisibilityOfElementLocated(locator));
     }
 
 }
