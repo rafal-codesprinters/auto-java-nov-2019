@@ -26,5 +26,4 @@ public class WordPressTests extends BaseTests {
         WpMainPage mainPage = WpMainPage.open(getBrowser());
         return mainPage.openLatestNote();
     }
-
 }
