@@ -20,6 +20,8 @@ public class LoginTests extends BaseTests {
 
     @Test
     void canLoginWithValidCredentials() {
+        /*Dzięki użyciu klasy User nie jest konieczne przekazywanie wprost w metodach poniżej jako argumentów nazwy
+        * użytkownika i hasła.*/
         User admin = User.getAdminUser();
         WpLoginPage loginPage = WpLoginPage.open(getBrowser());
         /*Metoda "logIn(...)" służy do udanego logowania, więc zwraca obiekt klasy WpAdminPage.*/

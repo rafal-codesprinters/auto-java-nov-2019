@@ -20,6 +20,8 @@ public class CommentsTests extends BaseTests {
 
     @Test
     void canPostCommentsToNote() {
+        /*Dzieki użyciu klasy Comment nie ma konieczności wypisywania za każdym razem w kolejnych metodach poniżej
+        * argumentów z treścią komentarza, nazwą użytkownika i jego emailem.*/
         Comment comment = Comment.getRandomComment();
         WpNotePage notePage = openLatestNote();
         WpNotePage updatedNotePage = notePage.postComment(comment);

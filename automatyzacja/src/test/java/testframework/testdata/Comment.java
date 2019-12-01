@@ -4,6 +4,8 @@ import java.util.UUID;
 
 public class Comment {
 
+    /*Klasa wykorzystywana w testach komentarzy na blogu.*/
+
     public String getText() {
         return text;
     }
@@ -33,6 +35,7 @@ public class Comment {
     private String mail;
 
     public static Comment getRandomComment() {
+        /*Ta metoda generuje losowe dane, których można użyć do testów komentarzy.*/
         Comment comment = new Comment();
         comment.setText(UUID.randomUUID().toString());
         comment.setName(UUID.randomUUID().toString());

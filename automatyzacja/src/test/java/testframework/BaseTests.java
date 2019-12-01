@@ -6,6 +6,8 @@ import testframework.driverfactory.DriverFactory;
 
 public class BaseTests {
 
+    /*Klasa bazowa testów, w której inicjalizowany jest driver.*/
+
     WebDriver driver;
 
     @BeforeEach
@@ -19,6 +21,8 @@ public class BaseTests {
         driver.quit();
     }
 
+    /*Metoda pozwalająca w testach uniknąć tworzenia drivera - zamiast tego pojawia się dużo bardziej zrozumiała metoda
+    * "getBrowser()".*/
     protected WebDriver getBrowser() {
         return driver;
     }
