@@ -9,33 +9,66 @@
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
+        <!--
+            Node "dependencies" pozwala zdefiniować bilbioteki, z których korzystamy pisząc kod. Domyślnie maven szuka
+            w central repository, ale można mu podać więcej niż jedno. W szczególności jest to konieczne jeśli chcemy
+            użyć firmowego repozytory.
+            Więcej informacji: https://maven.apache.org/guides/mini/guide-multiple-repositories.html
+        -->
         <dependency>
+            <!--
+                REST-assured jest biblioteką użytą do przykładowych testów w package "restassured". Uwaga: wygląda,
+                że musi być dodany jako dependencja PRZED JUnitem, albo nie bardzo działa poprawnie. Do testów wyłącznie
+                Selenium WebDrivera Rest Assured nie jest oczywiście potrzebne.
+            -->
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>4.1.2</version>
         </dependency>
         <dependency>
+            <!--
+                JUnit5, czyli Jupiter, jest frameworkiem służącym do uruchamiania testów jednostkowych. My używamy go do
+                uruchomienia testów Selnium WebDrivera.
+                Więcej informacji o JUnit5: https://junit.org/junit5/docs/current/user-guide/
+            -->
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.5.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>3.141.59</version>
-        </dependency>
-        <dependency>
+            <!--
+                Ta zależnośc porzebna jest aby możliwe było przekazywanie parametrów konfiguracyjnych do JUnita5
+                i wymuszenie równoległego wykonywania testów.
+            -->
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
             <version>5.5.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <!--
+                Ta zależność jest potrzebna aby możliwe było pisanie testów Selenium WebDrivera.
+                Więcej o Selenium oraz dokumentacja: https://selenium.dev/
+            -->
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>3.141.59</version>
+        </dependency>
     </dependencies>
 
     <build>
+        <!--
+            Node "build" określa sposób budowania (w tym kompilacji) napisanego kodu.
+        -->
         <plugins>
             <plugin>
+                <!--
+                    Maven Compiler Plugin pozwala na określenie, w jakiej wersji Javy będzie budowany kod. W przykładzie
+                    poniżej jest to wersja 13. Dla wersji 8 i starszej konieczne jest podanie zamiast "release" dwóch
+                    parametrów: "source" oraz "target", z wartością np. 1.8 dla Javy 8.
+                    Więcej informacji: https://maven.apache.org/plugins/maven-compiler-plugin/
+                -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
@@ -44,12 +77,23 @@
                 </configuration>
             </plugin>
             <plugin>
+                <!--
+                    Maven Surefire Plugin pozwala sterować wykonaniem testu np. przez podanie parametrów JUnita lub
+                    zmiennych systemowych. Oczywiście to tylko jeden z przykładów użycia.
+                    Więcej informacji: https://maven.apache.org/surefire/maven-surefire-plugin/
+                -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M3</version>
                 <configuration>
                     <properties>
                         <configurationParameters>
+                            <!--
+                                Jeśli w projekcie użyta została dependencja do "junit-jupiter-params" to możliwe jest
+                                skonfigurowanie testów uruchamianych z Mavena (pleceniem "mvn test") tak, by wykonywały
+                                się równolegle w wielu wątkach.
+                                Więcej informacji: https://junit.org/junit5/docs/current/user-guide/#writing-tests-parallel-execution
+                            -->
                             junit.jupiter.execution.parallel.enabled=true
                             junit.jupiter.execution.parallel.mode.default=concurrent
                             junit.jupiter.execution.parallel.config.strategy=fixed
@@ -57,13 +101,30 @@
                         </configurationParameters>
                     </properties>
                     <systemPropertyVariables>
+                        <!--
+                            W ten sposób można definiować kolejne zmienne systemowe. W przykładzie poniżej zmienna
+                            "default-browser" jest ustawiana na wartość "chrome" i można ją pobrać w kodzie metodą
+                            System.getProperty("default-browser");
+                            Więcej informacji: https://maven.apache.org/surefire/maven-surefire-plugin/examples/system-properties.html
+                        -->
                         <default-browser>chrome</default-browser>
                     </systemPropertyVariables>
                 </configuration>
                 <executions>
+                    <!--
+                        Nody "executions" opisują to, co dzieje się w runtime, czyli podczas gdy test jest wykonywany.
+                    -->
                     <execution>
                         <configuration>
                             <systemPropertyVariables>
+                                <!--
+                                    W ten sposób można definiować zmienne systemowe, które da się ustawić z linii
+                                    poleceń Mavena w następujący sposób: "mvn test -Dbrowser=chrome -Dgrid-host...".
+                                    Jeśli zmienne te nie zostaną ustawione, zwracana jest dla nich wartość "null" gdy
+                                    zostaną pobrane metodą System.getProperty("..."). Zmienna "browser" to nazwa
+                                    przeglądarki "grid-host" to adres (IP lub domenowy) wraz z portem, na którym działa
+                                    Selenium Grid Hub.
+                                -->
                                 <browser>${browser}</browser>
                                 <grid-host>${grid-host}</grid-host>
                             </systemPropertyVariables>
@@ -73,6 +134,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
