@@ -8,7 +8,7 @@ public class BaseTests {
 
     /*Klasa bazowa testów, w której inicjalizowany jest driver.*/
 
-    WebDriver driver;
+    private WebDriver driver;
 
     @BeforeEach
     void setup() {
