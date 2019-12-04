@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.codesprinters</groupId>
+    <artifactId>automatyzacja-testng</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <!--
+            Node "dependencies" pozwala zdefiniować bilbioteki, z których korzystamy pisząc kod. Domyślnie maven szuka
+            w central repository, ale można mu podać więcej niż jedno. W szczególności jest to konieczne jeśli chcemy
+            użyć firmowego repozytory.
+            Więcej informacji: https://maven.apache.org/guides/mini/guide-multiple-repositories.html
+        -->
+        <dependency>
+            <!--
+                REST-assured jest biblioteką użytą do przykładowych testów w package "restassured". Uwaga: wygląda,
+                że musi być dodany jako dependencja PRZED JUnitem, albo nie bardzo działa poprawnie. Do testów wyłącznie
+                Selenium WebDrivera Rest Assured nie jest oczywiście potrzebne.
+            -->
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>4.1.2</version>
+        </dependency>
+        <dependency>
+            <!--
+                Ta zależność jest potrzebna aby możliwe było pisanie testów Selenium WebDrivera.
+                Więcej o Selenium oraz dokumentacja: https://selenium.dev/
+            -->
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>3.141.59</version>
+        </dependency>
+        <dependency>
+            <!--
+                TestNG to alternatywny framework do Unit Testów - tak można go dodać jako dependency.
+
+                UWAGA: użycie w jedym projekcie zarówno TestNG jak i JUnit4.x/5 spowoduje problem z uruchomieniem testu
+                poleceniem "mvn test" z Mavena. Wykonają sie wtedy wyłącznie testy TestNG. Dlatego o ile z IntelliJ da
+                się wykonać jedne i drugie testy, jeśli chcemy korzystać z Mavena, trzeba zdecydować się na jeden
+                framework, lub rozdzielić testy na dwa różne projekty, z których jeden ma depencencję do JUnita5,
+                a drugi do TestNG.
+
+                Na sieci można znaleźć masę rad jak przy pomocy TestNG wykonać testy JUnit5 - nie radzę tego robić, bo
+                narażamy się na potykanie o problemy obu frameworków na raz. Są też rady jak przy pomocy profili
+                mavenowych żonglować wyborem test providerów w czasie wykonania testów. Zdrowy rozsądek podpowiada:
+
+                1. użyj jednego frameworku
+                2. jak musisz używać różnych, rób to w osobnych projektach
+            -->
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!--
+            Node "build" określa sposób budowania (w tym kompilacji) napisanego kodu.
+        -->
+        <plugins>
+            <plugin>
+                <!--
+                    Maven Compiler Plugin pozwala na określenie, w jakiej wersji Javy będzie budowany kod. W przykładzie
+                    poniżej jest to wersja 13. Dla wersji 8 i starszej konieczne jest podanie zamiast "release" dwóch
+                    parametrów: "source" oraz "target", z wartością np. 1.8 dla Javy 8.
+                    Więcej informacji: https://maven.apache.org/plugins/maven-compiler-plugin/
+                -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <release>13</release>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!--
+                    Maven Surefire Plugin pozwala sterować wykonaniem testu np. przez podanie parametrów JUnita lub
+                    zmiennych systemowych. Oczywiście to tylko jeden z przykładów użycia.
+                    Więcej informacji: https://maven.apache.org/surefire/maven-surefire-plugin/
+                -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <configuration>
+                    <!--
+                        Lokalizacja pliku konfiguracyjnego TestNG.
+                    -->
+                    <suiteXmlFiles>src/test/resources/testng.xml</suiteXmlFiles>
+                    <systemPropertyVariables>
+                        <!--
+                            W ten sposób można definiować kolejne zmienne systemowe. W przykładzie poniżej zmienna
+                            "default-browser" jest ustawiana na wartość "chrome" i można ją pobrać w kodzie metodą
+                            System.getProperty("default-browser");
+                            Więcej informacji: https://maven.apache.org/surefire/maven-surefire-plugin/examples/system-properties.html
+                        -->
+                        <default-browser>chrome</default-browser>
+                    </systemPropertyVariables>
+                </configuration>
+                <executions>
+                    <!--
+                        Nody "executions" opisują to, co dzieje się w runtime, czyli podczas gdy test jest wykonywany.
+                    -->
+                    <execution>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <!--
+                                    W ten sposób można definiować zmienne systemowe, które da się ustawić z linii
+                                    poleceń Mavena w następujący sposób: "mvn test -Dbrowser=chrome -Dgrid-host...".
+                                    Jeśli zmienne te nie zostaną ustawione, zwracana jest dla nich wartość "null" gdy
+                                    zostaną pobrane metodą System.getProperty("..."). Zmienna "browser" to nazwa
+                                    przeglądarki "grid-host" to adres (IP lub domenowy) wraz z portem, na którym działa
+                                    Selenium Grid Hub.
+                                -->
+                                <browser>${browser}</browser>
+                                <grid-host>${grid-host}</grid-host>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="TestSuite" verbose="5" parallel="methods" thread-count="2">
+    <test name="ParallelTests" parallel="methods" thread-count="4">
+        <classes>
+            <class name="google.GoogleSearchTests" />
+            <class name="markowiczpro.BlogTests" />
+            <class name="pageobjectspattern.CommentsTests" />
+            <class name="pageobjectspattern.LoginTests" />
+            <class name="pageobjectspattern.LogoutTests" />
+            <class name="restassured.RestTests" />
+        </classes>
+    </test>
+</suite>
